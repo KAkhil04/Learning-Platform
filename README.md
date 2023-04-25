@@ -1,3 +1,9 @@
+# ![group icon](/path/to/icon.png) Contributors
+
+1. Akhil Kurella (N673R798)
+2. Ajith Reddy Baddam ()
+3. Naveen Vanga ()
+
 # ![SQL Server 2022](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) Learning Platform - Database Design
 
 This is a sample database designed to store information about language courses and users. The database has 4 tables, where each table is in 3NF. Each table has at least 4 fields (including primary keys).
