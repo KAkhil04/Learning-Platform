@@ -47,7 +47,7 @@ email → user_id
 
 The foreign key constraint on the Users table referencing the Languages table has an ON DELETE SET NULL policy.
 
-## Courses
+### Courses
 
 The Courses table stores information about the courses that are available for users. The table has the following fields:
 
@@ -68,7 +68,7 @@ user_id → language_id
 The foreign key constraint on the Courses table referencing the Languages table has an ON DELETE CASCADE policy.
 The foreign key constraint on the Courses table referencing the Users table has an ON DELETE CASCADE policy.
 
-## Lessons
+### Lessons
 
 The Lessons table stores information about the lessons that are available for courses. The table has the following fields:
 
