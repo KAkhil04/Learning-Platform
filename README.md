@@ -19,7 +19,7 @@ The Languages table stores information about the languages that are available fo
 
 | Field              | Data Type   | Primary Key | Foreign Key | Required | Description                                               |
 |--------------------|-------------|-------------|-------------|----------|-----------------------------------------------------------|
-| language_id        | int         | Yes         |             | Yes      | Unique identifier for a language                          |
+| language_id        | int         |     Yes     |             | Yes      | Unique identifier for a language                          |
 | language_name      | varchar(50) |             | Yes         | Yes      | Name of the language                                       |
 | country_of_origin  | varchar(50) |             | Yes         | Yes      | Country of origin for the language                         |
 | difficulty_level   | varchar(20) |             | Yes         | Yes      | Difficulty level of the language (e.g. beginner, intermediate, advanced) |
@@ -35,7 +35,7 @@ The Users table stores information about the users who register for courses. The
 
 | Field            | Data Type   | Primary Key | Foreign Key | Required | Description                                                  |
 |------------------|-------------|-------------|-------------|----------|--------------------------------------------------------------|
-| user_id          | int         | Yes         |             |          | Unique identifier for a user                                  |
+| user_id          | int         |    Yes    |             |          | Unique identifier for a user                                  |
 | first_name       | nvarchar(50)|             |             | Yes      | First name of the user                                        |
 | last_name        | nvarchar(50)|             |             | Yes      | Last name of the user                                         |
 | email            | nvarchar(100)|            |             | Yes      | Email address of the user                                     |
@@ -59,7 +59,7 @@ The Courses table stores information about the courses that are available for us
 
 | Field              | Data Type     | Primary Key | Foreign Key   | Required | Description                                                  |
 |--------------------|---------------|-------------|---------------|----------|--------------------------------------------------------------|
-| course_id          | int           | Yes         |               |          | Unique identifier for a course                               |
+| course_id          | int           |     Yes     |               |          | Unique identifier for a course                               |
 | course_name        | nvarchar(100) |             |               | Yes      | Name of the course                                           |
 | language_id        | int           |             | Languages     | Yes      | Foreign key to the Languages table                           |
 | user_id            | int           |             | Users         | Yes      | Foreign key to the Users table                               |
