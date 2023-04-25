@@ -51,19 +51,19 @@ The foreign key constraint on the Users table referencing the Languages table ha
 
 The Courses table stores information about the courses that are available for users. The table has the following fields:
 
-course_id (primary key)
-course_name
-language_id (foreign key referencing the Languages table)
-user_id (foreign key referencing the Users table)
-course_description
-course_level
+1. course_id (primary key)
+2. course_name
+3. language_id (foreign key referencing the Languages table)
+4. user_id (foreign key referencing the Users table)
+5. course_description
+6. course_level
 
-# Functional dependencies (FDs):
+#### Functional dependencies (FDs):
 
 course_id → course_name, language_id, user_id, course_description, course_level
 user_id → language_id
 
-# Foreign key policy:
+#### Foreign key policy:
 
 The foreign key constraint on the Courses table referencing the Languages table has an ON DELETE CASCADE policy.
 The foreign key constraint on the Courses table referencing the Users table has an ON DELETE CASCADE policy.
@@ -72,16 +72,16 @@ The foreign key constraint on the Courses table referencing the Users table has 
 
 The Lessons table stores information about the lessons that are available for courses. The table has the following fields:
 
-lesson_id (primary key)
-lesson_name
-course_id (foreign key referencing the Courses table)
-lesson_content
-lesson_duration
+1. lesson_id (primary key)
+2. lesson_name
+3. course_id (foreign key referencing the Courses table)
+4. lesson_content
+5. lesson_duration
 
-# Functional dependencies (FDs):
+#### Functional dependencies (FDs):
 
 lesson_id → lesson_name, course_id, lesson_content, lesson_duration
 
-# Foreign key policy:
+#### Foreign key policy:
 
 The foreign key constraint on the Lessons table referencing the Courses table has an ON DELETE CASCADE policy.
