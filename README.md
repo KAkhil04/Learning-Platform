@@ -1,4 +1,4 @@
-# ![group icon](/path/to/icon.png) Contributors
+# [![Group Name](https://img.shields.io/badge/Group-Name-blue.svg)](https://group-url) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
