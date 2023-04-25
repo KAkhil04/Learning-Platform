@@ -1,14 +1,15 @@
-# ![Group Icon](https://img.icons8.com/color/48/000000/pegasus.png) Contributors
+## ![Group Icon](https://img.icons8.com/color/48/000000/pegasus.png) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
 3. Naveen Vanga ()
 
-# ![SQL Server 2022](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) Learning Platform - Database Design
+
+## ![SQL Server 2022](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) Database Design
 
 This is a sample database designed to store information about language courses and users. The database has 4 tables, where each table is in 3NF. Each table has at least 4 fields (including primary keys).
 
-## Tables
+### Tables
 
 The database has the following tables:
 
@@ -20,7 +21,7 @@ Courses   |
 Lessons   |
 
 
-### Languages
+#### Languages
 ---------
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
 
@@ -32,12 +33,12 @@ The Languages table stores information about the languages that are available fo
 | difficulty_level   | varchar(20) |             | Yes         | Yes      | Difficulty level of the language (e.g. beginner, intermediate, advanced) |
 
 
-#### Functional dependencies (FDs):
+##### Functional dependencies (FDs):
 
 language_id → language_name, country_of_origin, difficulty_level
 
 
-### Users
+#### Users
 -----
 
 The Users table stores information about the users who register for courses. The table has the following fields:
@@ -53,16 +54,16 @@ The Users table stores information about the users who register for courses. The
 | registration_date| date        |             |             | Yes      | Date the user registered on the platform                      |
 
 
-#### Functional dependencies (FDs):
+##### Functional dependencies (FDs):
 
 user_id → first_name, last_name, password, language_id, registration_date, email 
 
-#### Foreign key policy:
+##### Foreign key policy:
 
 The foreign key constraint on the Users table referencing the Languages table has an ON DELETE SET NULL policy.
 
 
-### Courses
+#### Courses
 -------
 The Courses table stores information about the courses that are available for users. The table has the following fields:
 
@@ -76,17 +77,17 @@ The Courses table stores information about the courses that are available for us
 | course_level       | nvarchar(20)  |             |               | No       | Difficulty level of the course (e.g. beginner, intermediate, advanced) |
 
 
-#### Functional dependencies (FDs):
+##### Functional dependencies (FDs):
 
 course_id → course_name, language_id, course_description, course_level, user_id
 
-#### Foreign key policy:
+##### Foreign key policy:
 
 The foreign key constraint on the Courses table referencing the Languages table has an ON DELETE CASCADE policy.
 The foreign key constraint on the Courses table referencing the Users table has an ON DELETE CASCADE policy.
 
 
-### Lessons
+#### Lessons
 -------
 The Lessons table stores information about the lessons that are available for courses. The table has the following fields:
 
@@ -100,21 +101,21 @@ The Lessons table stores information about the lessons that are available for co
 | course_level        | nvarchar(20)   |             |             | No        | Difficulty level of the course (e.g. beginner, intermediate, advanced) |
 
 
-#### Functional dependencies (FDs):
+##### Functional dependencies (FDs):
 
 lesson_id → lesson_name, course_id, lesson_content, lesson_duration
 
-#### Foreign key policy:
+##### Foreign key policy:
 
 The foreign key constraint on the Lessons table referencing the Courses table has an ON DELETE CASCADE policy.
 
-### Triggers
+#### Triggers
 --------
 
 1. Trigger to prevent deletion of a language if it is associated with any course.
 2. Trigger to prevent deletion of a user if they have any enrolled courses.
 
-### Policies
+#### Policies
 --------
 
 1. Policy to prevent insertion or update of a course with a non-existent language ID.
