@@ -101,3 +101,15 @@ lesson_id → lesson_name, course_id, lesson_content, lesson_duration
 #### Foreign key policy:
 
 The foreign key constraint on the Lessons table referencing the Courses table has an ON DELETE CASCADE policy.
+
+### Triggers
+--------
+
+1. Trigger to prevent deletion of a language if it is associated with any course.
+2. Trigger to prevent deletion of a user if they have any enrolled courses.
+
+### Policies
+--------
+
+1. Policy to prevent insertion or update of a course with a non-existent language ID.
+2. Policy to prevent insertion or update of a course with a non-existent user ID.
