@@ -9,7 +9,7 @@
 ## ![Demo](https://img.icons8.com/color/25/000000/youtube.png) Demo
 
 
-## ![UI](https://img.icons8.com/color/25/000000/comics-magazine.png) UI Design
+## ![UI](https://img.icons8.com/color/25/000000/comics-magazine.png) UI Design 
 
 ### Frondend
 1. HTML
@@ -23,8 +23,15 @@ C#
 ### Framework
 .Net
 
+### Tools
+1. Visual Studio Code
+2. Visual Studio 2022
 
 ## ![SQL Server 2022](https://img.icons8.com/color/25/000000/microsoft-sql-server.png) Database Design
+
+###Tools
+1. SQL Server 2022
+2. SQL Server Management Studio 2022
 
 This is a sample database designed to store information about language courses and users. The database has 4 tables, where each table is in 3NF. Each table has at least 4 fields (including primary keys).
 
