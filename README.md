@@ -35,7 +35,7 @@ The Users table stores information about the users who register for courses. The
 
 | Field            | Data Type   | Primary Key | Foreign Key | Required | Description                                                  |
 |------------------|-------------|-------------|-------------|----------|--------------------------------------------------------------|
-| user_id          | int         |    Yes    |             |          | Unique identifier for a user                                  |
+| user_id          | int         |     Yes     |             |          | Unique identifier for a user                                  |
 | first_name       | nvarchar(50)|             |             | Yes      | First name of the user                                        |
 | last_name        | nvarchar(50)|             |             | Yes      | Last name of the user                                         |
 | email            | nvarchar(100)|            |             | Yes      | Email address of the user                                     |
@@ -81,11 +81,15 @@ The foreign key constraint on the Courses table referencing the Users table has 
 
 The Lessons table stores information about the lessons that are available for courses. The table has the following fields:
 
-1. lesson_id (primary key)
-2. lesson_name
-3. course_id (foreign key referencing the Courses table)
-4. lesson_content
-5. lesson_duration
+| Field               | Data Type       | Primary Key | Foreign Key | Required | Description                                                     |
+|---------------------|----------------|-------------|-------------|----------|-----------------------------------------------------------------|
+| course_id           | int            |     Yes     |             | Yes       | Unique identifier for a course                                  |
+| course_name         | nvarchar(100)   |             |             | Yes       | Name of the course                                              |
+| language_id         | int            |             | Languages  | Yes      | Foreign key to the Languages table                              |
+| user_id             | int            |             | Users       | Yes       | Foreign key to the Users table                                   |
+| course_description  | nvarchar(MAX)   |             |             | No        | Description of the course                                       |
+| course_level        | nvarchar(20)   |             |             | No        | Difficulty level of the course (e.g. beginner, intermediate, advanced) |
+
 
 #### Functional dependencies (FDs):
 
