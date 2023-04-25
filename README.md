@@ -1,4 +1,4 @@
-# [![Group Name](https://icons8.com/icon/21148/people)](https://group-url) Contributors
+# ![Group Icon](https://icons8.com/icon/21148/people) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
