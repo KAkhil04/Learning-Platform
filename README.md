@@ -1,4 +1,4 @@
-# ![SQL Server 2022 database icon](https://raw.githubusercontent.com/github/explore/731c6ddbf2e2b5566b0dd6988a9c5985e5f5aa5c/topics/sql-server/sql-server.png)Learning Platform Database
+# ![SQL Server 2022](https://img.icons8.com/color/48/000000/microsoft-sql-server.png) Learning Platform Database
 
 This is a sample database designed to store information about language courses and users. The database has 4 tables, where each table is in 3NF. Each table has at least 4 fields (including primary keys).
 
@@ -13,15 +13,12 @@ Users     |
 Courses   |
 Lessons   |
 
-## Languages
+### Languages
 
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
-language_id (primary key)
-language_name
-country_of_origin
-difficulty_level
+language_id (primary key), language_name, country_of_origin, difficulty_level
 
-# Functional dependencies (FDs):
+### Functional dependencies (FDs):
 
 language_id → language_name, country_of_origin, difficulty_level
 
