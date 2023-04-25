@@ -1,6 +1,6 @@
-# ![Project](https://img.icons8.com/color/25/000000/pegasus.png) Learning Platform
+# ![Project](https://img.icons8.com/color/40/000000/pegasus.png) Learning Platform
 
-## ![Group Icon](https://img.icons8.com/color/25/000000/pegasus.png) Contributors
+## ![Group Icon](https://img.icons8.com/color/25/000000/collaboration.png) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
@@ -12,9 +12,10 @@
 ## ![UI](https://img.icons8.com/color/25/000000/comics-magazine.png) UI Design
 
 ### Frondend
-HTML
-CSS
-JavaScript
+1. HTML
+2. CSS
+3. JavaScript
+4. XML
 
 ### Backend
 C#
