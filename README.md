@@ -16,8 +16,9 @@ Lessons   |
 ### Languages
 
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
+
     Field    |    Data Type    |  Primary Key  | Foreign Key | Required |    Description    |
----------------------------------------------------------------------------------------------
+-------------|-----------------|---------------|-------------|----------|-------------------|
  language_id |       int       |      Yes      |             |    Yes   | Unique identifier for a language |
 
 #### Functional dependencies (FDs):
