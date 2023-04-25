@@ -1,4 +1,4 @@
-# ![Group Icon](https://iconduck.com/icons/244824/alien) Contributors
+# ![Group Icon](https://iconduck.com/icons/244824/alien.png) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
