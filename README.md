@@ -1,4 +1,4 @@
-# ![Group Icon](https://iconduck.com/icons/244824/alien.png) Contributors
+# ![Group Icon](https://img.icons8.com/color/48/000000/pegasus.png) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
