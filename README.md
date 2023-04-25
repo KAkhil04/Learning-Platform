@@ -6,15 +6,16 @@ This is a sample database designed to store information about language courses a
 
 The database has the following tables:
 
-Languages
-Users
-Courses
-Lessons
+Tables    |
+----------|
+Languages |
+Users     |
+Courses   |
+Lessons   |
 
 ## Languages
 
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
-
 language_id (primary key)
 language_name
 country_of_origin
