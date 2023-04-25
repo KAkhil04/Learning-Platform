@@ -14,7 +14,7 @@ Courses   |
 Lessons   |
 
 ### Languages
-
+---------
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
 
 | Field              | Data Type   | Primary Key | Foreign Key | Required | Description                                               |
@@ -30,6 +30,7 @@ The Languages table stores information about the languages that are available fo
 language_id → language_name, country_of_origin, difficulty_level
 
 ### Users
+-----
 
 The Users table stores information about the users who register for courses. The table has the following fields:
 
@@ -54,7 +55,7 @@ email → user_id
 The foreign key constraint on the Users table referencing the Languages table has an ON DELETE SET NULL policy.
 
 ### Courses
-
+-------
 The Courses table stores information about the courses that are available for users. The table has the following fields:
 
 | Field              | Data Type     | Primary Key | Foreign Key   | Required | Description                                                  |
@@ -78,7 +79,7 @@ The foreign key constraint on the Courses table referencing the Languages table 
 The foreign key constraint on the Courses table referencing the Users table has an ON DELETE CASCADE policy.
 
 ### Lessons
-
+-------
 The Lessons table stores information about the lessons that are available for courses. The table has the following fields:
 
 | Field               | Data Type       | Primary Key | Foreign Key | Required | Description                                                     |
