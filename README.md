@@ -1,4 +1,4 @@
-# ![SQL Server 2022 database](https://img.shields.io/badge/-SQL%20Server%202022-blue?style=flat-square&logo=microsoft-sql-server&logoColor=white) Learning Platform Database
+# ![SQL Server 2022 database icon](https://raw.githubusercontent.com/github/explore/731c6ddbf2e2b5566b0dd6988a9c5985e5f5aa5c/topics/sql-server/sql-server.png)Learning Platform Database
 
 This is a sample database designed to store information about language courses and users. The database has 4 tables, where each table is in 3NF. Each table has at least 4 fields (including primary keys).
 
