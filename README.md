@@ -16,30 +16,34 @@ Lessons   |
 ### Languages
 
 The Languages table stores information about the languages that are available for courses. The table has the following fields:
-language_id (primary key), language_name, country_of_origin, difficulty_level
 
-### Functional dependencies (FDs):
+1. language_id (primary key) 
+2. language_name 
+3. country_of_origin 
+4. difficulty_level
+
+#### Functional dependencies (FDs):
 
 language_id → language_name, country_of_origin, difficulty_level
 
-## Users
+### Users
 
 The Users table stores information about the users who register for courses. The table has the following fields:
 
-user_id (primary key)
-first_name
-last_name
-email
-password
-language_id (foreign key referencing the Languages table)
-registration_date
+1. user_id (primary key)
+2. first_name
+3. last_name
+4. email
+5. password
+6. language_id (foreign key referencing the Languages table)
+7. registration_date
 
-# Functional dependencies (FDs):
+#### Functional dependencies (FDs):
 
 user_id → first_name, last_name, email, password, language_id, registration_date
 email → user_id
 
-# Foreign key policy:
+#### Foreign key policy:
 
 The foreign key constraint on the Users table referencing the Languages table has an ON DELETE SET NULL policy.
 
