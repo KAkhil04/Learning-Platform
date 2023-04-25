@@ -1,8 +1,26 @@
+# ![Project](https://img.icons8.com/color/25/000000/pegasus.png) Learning Platform
+
 ## ![Group Icon](https://img.icons8.com/color/25/000000/pegasus.png) Contributors
 
 1. Akhil Kurella (N673R798)
 2. Ajith Reddy Baddam ()
 3. Naveen Vanga ()
+
+## ![Demo](https://img.icons8.com/color/25/000000/youtube.png) Demo
+
+
+## ![UI](https://img.icons8.com/color/25/000000/comics-magazine.png) UI Design
+
+### Frondend
+HTML
+CSS
+JavaScript
+
+### Backend
+C#
+
+### Framework
+.Net
 
 
 ## ![SQL Server 2022](https://img.icons8.com/color/25/000000/microsoft-sql-server.png) Database Design
