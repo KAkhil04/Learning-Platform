@@ -49,8 +49,7 @@ The Users table stores information about the users who register for courses. The
 
 #### Functional dependencies (FDs):
 
-user_id → first_name, last_name, email, password, language_id, registration_date
-email → user_id
+user_id → first_name, last_name, password, language_id, registration_date, email 
 
 #### Foreign key policy:
 
@@ -73,8 +72,7 @@ The Courses table stores information about the courses that are available for us
 
 #### Functional dependencies (FDs):
 
-course_id → course_name, language_id, user_id, course_description, course_level
-user_id → language_id
+course_id → course_name, language_id, course_description, course_level, user_id
 
 #### Foreign key policy:
 
