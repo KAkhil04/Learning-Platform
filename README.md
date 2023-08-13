@@ -2,7 +2,7 @@
 
 ## ![Group Icon](https://img.icons8.com/color/25/000000/collaboration.png) Contributors
 
-1. Akhil Kurella (N673R798) - Kurella04
+1. Akhil K (N673R798) - KAkhil04
 2. Ajith Reddy Baddam (Z563Q949) - ajithreddybaddam
 3. Naveen Vanga (G636V632) - NaveenVanga1618
 
