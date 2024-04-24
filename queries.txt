@@ -1,62 +1,16 @@
-{
-  "datasource": {
-    "uid": "${Datasource}",
-    "type": "prometheus"
-  },
-  "description": "No.of Nodepools in the cluster",
-  "fieldConfig": {
-    "defaults": {
-      "mappings": [],
-      "thresholds": {
-        "mode": "absolute",
-        "steps": [
-          {
-            "color": "blue",
-            "value": null
-          }
-        ]
-      },
-      "color": {
-        "mode": "thresholds"
-      }
-    },
-    "overrides": []
-  },
-  "gridPos": {
-    "h": 4,
-    "w": 3,
-    "x": 0,
-    "y": 3
-  },
-  "id": 88,
-  "options": {
-    "reduceOptions": {
-      "values": false,
-      "calcs": [
-        "lastNotNull"
-      ],
-      "fields": ""
-    },
-    "orientation": "auto",
-    "textMode": "auto",
-    "colorMode": "value",
-    "graphMode": "none",
-    "justifyMode": "center"
-  },
-  "pluginVersion": "10.2.0",
-  "targets": [
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${Datasource}"
-      },
-      "editorMode": "code",
-      "expr": "(count without (agentpool) (sum(sum_over_time(apiserver_audit_requests_rejected_total{cluster=~\"$Cluster\"}[$__range])) by (agentpool)) or vector(0) )",
-      "legendFormat": "Count",
-      "range": true,
-      "refId": "A"
-    }
-  ],
-  "title": "Nodepool Count",
-  "type": "stat"
-}
+(count without (agentpool) (sum(sum_over_time(apiserver_audit_requests_rejected_total{cluster=~"$Cluster"}[$__range])) by (agentpool)) or vector(0) )
+
+
+sum(cadvisor_version_info{agentpool=~"$NodePool"})
+
+sum(cadvisor_version_info{agentpool=~"$NodePool"}) by (agentpool)
+
+kube_node_status_capacity{resource=~"pods"}
+
+ 100-(avg(rate(node_cpu_seconds_total{node=~".*$NodePool.*",mode="idle"}[5m]))*100)
+
+avg(node_memory_MemTotal_bytes{node=~".*$NodePool.*"}-node_memory_MemAvailable_bytes{node=~".*$NodePool.*"})/ avg(node_memory_MemTotal_bytes{node=~".*$NodePool.*"}) *100
+
+sum(kube_node_status_capacity{resource=~"cpu"})
+
+sum(kube_node_status_capacity{resource=~"memory"})
