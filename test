@@ -1,22 +1,20 @@
-Description:  Limit Container Capabilities
-Containers should not enable more capabilites than needed as this opens the door for malicious use. To enable only the required capabilities, the appropriate Security Context Constraints (SCCs) should set capabilities as a list in allowedCapabilities.
-Id:            xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities
-Instructions:  Inspect each SCC returned from running the following command:
-$ oc get scc
-Next, examine the outputs of the following commands:
-$ oc describe roles --all-namespaces
-$ oc describe clusterroles
-For any role/clusterrole that reference the
-securitycontextconstraints resource with the resourceNames
-of the SCCs that do not list an explicit allowedCapabilities, examine the
-associated rolebindings to account for the users that are bound to the role.
-Review each SCC and determine that only required capabilities are either
-completely added as a list entry under allowedCapabilities,
-or that all the un-required capabilities are dropped for containers and SCCs.
-varible var_sccs_with_allowed_capabilities_regex can be set to exclude certain
-SCCs from the check.
-Use following command to verify if the correct regex is being used, this ouput
-will list unqualified SCCs:
-$ oc get scc -o json | [.items[] | select(.metadata.name | test("^privileged$|^hostnetwork-v2$|^restricted-v2$|^nonroot-v2$"; "") | not) | select(.allowedCapabilities != null) | .metadata.name]
-^privileged$|^hostnetwork-v2$|^restricted-v2$|^nonroot-v2$ should be replace to the actual value set,
-either the default one or the one set from TailoredProfile.
+#!/bin/bash
+
+# Get all SCCs
+echo "Getting all SCCs..."
+oc get scc
+
+# Describe all roles in all namespaces
+echo "Describing all roles in all namespaces..."
+oc describe roles --all-namespaces
+
+# Describe all cluster roles
+echo "Describing all cluster roles..."
+oc describe clusterroles
+
+# Define the regex for SCCs to exclude
+SCCS_TO_EXCLUDE_REGEX="^privileged$|^hostnetwork-v2$|^restricted-v2$|^nonroot-v2$"
+
+# Get unqualified SCCs
+echo "Getting unqualified SCCs..."
+oc get scc -o json | jq -r ".items[] | select(.metadata.name | test(\"$SCCS_TO_EXCLUDE_REGEX\"; \"\") | not) | select(.allowedCapabilities != null) | .metadata.name"
