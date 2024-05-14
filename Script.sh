@@ -11,18 +11,18 @@ for node in $nodes; do
   echo "Node: $node"
   
   # Start a debug session on the node
-  oc debug node/$node -- chroot /host bash -c "
+  oc debug node/$node -- chroot /host bash -c '
     # Check if sysctl configuration file exists
     if sudo [ -f /etc/sysctl.d/90-kubelet.conf ]; then
-      echo 'File exists'
+      echo "File exists"
     else
-      echo 'Not Exists'
+      echo "Not Exists"
     fi
 
     # Loop through each parameter and check its value
-    for parameter in ${parameters[@]}; do
-      echo 'Parameter:' $parameter
-      sudo grep $parameter /etc/sysctl.d/90-kubelet.conf || echo 'Not found'
+    for parameter in '"${parameters[@]}"'; do
+      echo "Parameter:" $parameter
+      sudo grep $parameter /etc/sysctl.d/90-kubelet.conf || echo "Not found"
     done
-  "
+  '
 done
