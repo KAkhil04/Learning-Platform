@@ -1,20 +1,31 @@
-#!/bin/bash
+## OpenShift Cluster Administration Task
 
-# Get all SCCs
-echo "Getting all SCCs..."
-oc get scc
+**Cluster Name:**
+(Please provide the name of the OpenShift cluster)
 
-# Describe all roles in all namespaces
-echo "Describing all roles in all namespaces..."
-oc describe roles --all-namespaces
+**Cluster Version:**
+(Please provide the version of the OpenShift cluster)
 
-# Describe all cluster roles
-echo "Describing all cluster roles..."
-oc describe clusterroles
+**Environment:**
+(Dev/QA/Prod - please specify the environment)
 
-# Define the regex for SCCs to exclude
-SCCS_TO_EXCLUDE_REGEX="^privileged$|^hostnetwork-v2$|^restricted-v2$|^nonroot-v2$"
+**Task Description:**
+(Please provide a detailed description of the task)
 
-# Get unqualified SCCs
-echo "Getting unqualified SCCs..."
-oc get scc -o json | jq -r ".items[] | select(.metadata.name | test(\"$SCCS_TO_EXCLUDE_REGEX\"; \"\") | not) | select(.allowedCapabilities != null) | .metadata.name"
+**Expected Outcome:**
+(What is the expected outcome after the task is completed?)
+
+**Affected Services/Applications:**
+(Please list any services or applications that will be affected by this task)
+
+**Rollback Plan:**
+(In case of failure, what is the rollback plan?)
+
+**Maintenance Window:**
+(Please specify the preferred time for performing this task)
+
+**Additional Notes:**
+(Any additional information that would be helpful for the task)
+
+**Attachments:**
+(Attach any relevant documents or screenshots)
