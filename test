@@ -1,31 +1,45 @@
-## OpenShift Cluster Administration Task
-
-**Cluster Name:**
-(Please provide the name of the OpenShift cluster)
-
-**Cluster Version:**
-(Please provide the version of the OpenShift cluster)
-
-**Environment:**
-(Dev/QA/Prod - please specify the environment)
-
-**Task Description:**
-(Please provide a detailed description of the task)
-
-**Expected Outcome:**
-(What is the expected outcome after the task is completed?)
-
-**Affected Services/Applications:**
-(Please list any services or applications that will be affected by this task)
-
-**Rollback Plan:**
-(In case of failure, what is the rollback plan?)
-
-**Maintenance Window:**
-(Please specify the preferred time for performing this task)
-
-**Additional Notes:**
-(Any additional information that would be helpful for the task)
-
-**Attachments:**
-(Attach any relevant documents or screenshots)
+apiVersion: ran.openshift.io/v1
+kind: PolicyGenTemplate
+metadata:
+  name: "compliance"
+  namespace: "ztp-common"
+spec:
+  bindingRules:
+    # These policies will correspond to all clusters with this label:
+    compliance: "2023-09-22"
+  sourceFiles:
+    - fileName: namespace.yaml
+      policyName: "compliance-2023-09-22"
+      complianceType: musthave
+      metadata:
+        name: openshift-compliance
+    - fileName: operatorgroup.yaml
+      policyName: "compliance-2023-09-22"
+      complianceType: musthave
+      metadata:
+        name: compliance-operator
+        namespace: openshift-compliance
+      spec:
+        targetNamespaces:
+          - openshift-compliance
+        upgradeStrategy: Default
+    - fileName: subscription.yaml
+      policyName: "compliance-2023-09-22"
+      complianceType: musthave
+      metadata:
+        name: compliance-operator-sub
+        namespace: openshift-compliance
+        annotations:
+          ran.openshift.io/ztp-deploy-wave: "2"
+      spec:
+        channel: "release-0.1"
+        installPlanApproval: "Manual"
+        name: compliance-operator
+        source: my-redhat-operators
+        sourceNamespace: openshift-marketplace
+        startingCSV: compliance-operator.v0.1.61
+      status:
+        installedCSV: compliance-operator.v0.1.61
+    - fileName: compliance-scansetting-instance.yaml
+      policyName: "compliance-2023-09-22"
+      complianceType: musthave
