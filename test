@@ -1,45 +1,5 @@
-apiVersion: ran.openshift.io/v1
-kind: PolicyGenTemplate
-metadata:
-  name: "compliance"
-  namespace: "ztp-common"
-spec:
-  bindingRules:
-    # These policies will correspond to all clusters with this label:
-    compliance: "2023-09-22"
-  sourceFiles:
-    - fileName: namespace.yaml
-      policyName: "compliance-2023-09-22"
-      complianceType: musthave
-      metadata:
-        name: openshift-compliance
-    - fileName: operatorgroup.yaml
-      policyName: "compliance-2023-09-22"
-      complianceType: musthave
-      metadata:
-        name: compliance-operator
-        namespace: openshift-compliance
-      spec:
-        targetNamespaces:
-          - openshift-compliance
-        upgradeStrategy: Default
-    - fileName: subscription.yaml
-      policyName: "compliance-2023-09-22"
-      complianceType: musthave
-      metadata:
-        name: compliance-operator-sub
-        namespace: openshift-compliance
-        annotations:
-          ran.openshift.io/ztp-deploy-wave: "2"
-      spec:
-        channel: "release-0.1"
-        installPlanApproval: "Manual"
-        name: compliance-operator
-        source: my-redhat-operators
-        sourceNamespace: openshift-marketplace
-        startingCSV: compliance-operator.v0.1.61
-      status:
-        installedCSV: compliance-operator.v0.1.61
-    - fileName: compliance-scansetting-instance.yaml
-      policyName: "compliance-2023-09-22"
-      complianceType: musthave
+The issue was likely caused by the delay in DNS propagation. When the OpenShift dashboard was moved to the NetScaler Load Balancer, the DNS records needed to be updated to point to the new IP address of the Load Balancer. DNS propagation is the time it takes for the DNS to update across the internet, and this can sometimes take a while.
+
+During this time, any attempts to access the OpenShift dashboard through the old DNS entry (which points to the old IP address) would fail because the service is no longer there. It's now behind the Load Balancer at a new IP address.
+
+So, until the DNS update was fully propagated, the dashboard URL would not respond, causing the issue you experienced.
