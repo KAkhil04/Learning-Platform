@@ -1,12 +1,73 @@
-Node-Selectors:              node-role.kubernetes.io/gpu=
-Tolerations:                 node-role.kubernetes.io/gpu:NoSchedule op=Exists
-                             node.kubernetes.io/memory-pressure:NoSchedule op=Exists
-                             node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-                             role=worker:NoSchedule
-                             vsad:NoSchedule op=Exists
-Events:
-  Type     Reason            Age                From               Message
-  ----     ------            ----               ----               -------
-  Warning  FailedScheduling  50m                default-scheduler  0/28 nodes are available: 2 node(s) had untolerated taint {node-role.kubernetes.io/infra: infra}, 23 node(s) didn't match Pod's node affinity/selector, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/28 nodes are available: 28 Preemption is not helpful for scheduling..
-  Warning  FailedScheduling  10m (x8 over 45m)  default-scheduler  0/28 nodes are available: 2 node(s) had untolerated taint {node-role.kubernetes.io/infra: infra}, 23 node(s) didn't match Pod's node affinity/selector, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/28 nodes are available: 28 Preemption is not helpful for scheduling..
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: enablednamespace
+  annotations:
+    metadata.gatekeeper.sh/title: "Allows pods to be deployed on approved app namespaces"
+    metadata.gatekeeper.sh/version: 1.0.0
+    description: >-
+      Allows pods to be deployed on approved app namespaces
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  crd:
+    spec:
+      names:
+        kind: enabledNamespace
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            excludedappnamespace:
+              description: Allows pods to be deployed on approved app namespaces
+              type: array
+              items:
+                type: string
+
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package enablednamespace
+        violation[{"msg": msg}] {
+          satisfied := [good | namespace = input.parameters.excludedappnamespace[_] ; good = contains(input.review.namespace, namespace)]
+          not any(satisfied)
+          msg := sprintf("%v App namespace is not approved" , [input.review.namespace])
+        }
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: enabledNamespace
+metadata:
+  name: enablednamespace
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod", "Deployment"]
+    excludedNamespaces: ["appdev-gitops", "bitnami-sealed-secrets", "cert-manager", "community-operators", "default", "grafana", "istio-system", "kiali", "open-cluster-*", "openshift*", "*-operator", "kube-*", "sysdig", "trident", "willitconnect"]
+  parameters:
+    excludedappnamespace:
+    - "jdhv-"
+    - "jlnv-"
+    - "ih6v-"
+    - "ibm-"
+    - "cp4d-"
+    - "e0sv-"
+    - "nt4v-"
+    - "koev-"
+    - "apnv-"
+    - "i85v-"
+    - "gvnv-"
+    - "v19g-"
+    - "rdag-"
+    - "ipyv-"
+    - "sbhv-"
+    - "es0v-"
+    - "iipv-"
+    - "j14v-"
+    - "hzgv-"
+    - "gulv-"
