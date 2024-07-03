@@ -1,73 +1,12 @@
-apiVersion: templates.gatekeeper.sh/v1beta1
-kind: ConstraintTemplate
-metadata:
-  name: enablednamespace
-  annotations:
-    metadata.gatekeeper.sh/title: "Allows pods to be deployed on approved app namespaces"
-    metadata.gatekeeper.sh/version: 1.0.0
-    description: >-
-      Allows pods to be deployed on approved app namespaces
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-spec:
-  crd:
-    spec:
-      names:
-        kind: enabledNamespace
-      validation:
-        # Schema for the `parameters` field
-        openAPIV3Schema:
-          type: object
-          properties:
-            excludedappnamespace:
-              description: Allows pods to be deployed on approved app namespaces
-              type: array
-              items:
-                type: string
+We are noticing an issue in our current openshift env where the connection between seldon-controller & ocp k8s api server keeps disconnecting frequently. We discussed this behaviour with Seldon Support Team and they provided openshift specific installation instructions which require the following pre-requisites.
 
-  targets:
-    - target: admission.k8s.gatekeeper.sh
-      rego: |
-        package enablednamespace
-        violation[{"msg": msg}] {
-          satisfied := [good | namespace = input.parameters.excludedappnamespace[_] ; good = contains(input.review.namespace, namespace)]
-          not any(satisfied)
-          msg := sprintf("%v App namespace is not approved" , [input.review.namespace])
-        }
+ 
+OpenShift Installation Doc: https://deploy.seldon.io/en/latest/contents/getting-started/openshift-installation/index.html#introduction
+ 
+Pre-Requisites list of operators required to be installed on ocp cluster:
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: enabledNamespace
-metadata:
-  name: enablednamespace
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-spec:
-  enforcementAction: deny
-  match:
-    kinds:
-      - apiGroups: [""]
-        kinds: ["Pod", "Deployment"]
-    excludedNamespaces: ["appdev-gitops", "bitnami-sealed-secrets", "cert-manager", "community-operators", "default", "grafana", "istio-system", "kiali", "open-cluster-*", "openshift*", "*-operator", "kube-*", "sysdig", "trident", "willitconnect"]
-  parameters:
-    excludedappnamespace:
-    - "jdhv-"
-    - "jlnv-"
-    - "ih6v-"
-    - "ibm-"
-    - "cp4d-"
-    - "e0sv-"
-    - "nt4v-"
-    - "koev-"
-    - "apnv-"
-    - "i85v-"
-    - "gvnv-"
-    - "v19g-"
-    - "rdag-"
-    - "ipyv-"
-    - "sbhv-"
-    - "es0v-"
-    - "iipv-"
-    - "j14v-"
-    - "hzgv-"
-    - "gulv-"
+Red Hat OpenShift distributed tracing platform (provided by Red Hat) (1.39.0-3)*
+Kiali Operator (provided by Red Hat) (1.57.3)*
+Red Hat OpenShift Service Mesh (provided by Red Hat) (2.3.0)*
+ 
+We also do not have privilage to look at installed operators in the cluster. Could you give us read privilages to look into it ?
