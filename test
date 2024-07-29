@@ -1,3 +1,1 @@
-Hello Team,
-
-Attachment contains the compliance issues related to file permissions we are noticing in the clusters. In order to address them, do we have any other way instead of making the changes manually on nodes?
+Ensuring correct file permissions for the CNI configuration files is crucial for maintaining security compliance and operational integrity. Non-compliance could lead to security vulnerabilities, audit failures, and potential legal and financial repercussions. Automating this process will enhance efficiency, reduce manual effort, and ensure consistent configurations across all nodes, thereby protecting our infrastructure and maintaining service availability.
