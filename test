@@ -1,12 +1,17 @@
-We are noticing an issue in our current openshift env where the connection between seldon-controller & ocp k8s api server keeps disconnecting frequently. We discussed this behaviour with Seldon Support Team and they provided openshift specific installation instructions which require the following pre-requisites.
+ocp4-cis-node-master-file-permissions-cni-conf	"As a user with administrator privileges, log into a node in the relevant pool:
 
- 
-OpenShift Installation Doc: https://deploy.seldon.io/en/latest/contents/getting-started/openshift-installation/index.html#introduction
- 
-Pre-Requisites list of operators required to be installed on ocp cluster:
+$ oc debug node/$NODE_NAME
 
-Red Hat OpenShift distributed tracing platform (provided by Red Hat) (1.39.0-3)*
-Kiali Operator (provided by Red Hat) (1.57.3)*
-Red Hat OpenShift Service Mesh (provided by Red Hat) (2.3.0)*
- 
-We also do not have privilage to look at installed operators in the cluster. Could you give us read privilages to look into it ?
+At the sh-4.4# prompt, run:
+
+# chroot /host
+
+
+Then,run the command:
+$ ls -l /etc/cni/net.d/*
+If properly configured, the output should indicate the following permissions:
+-rw-------"	"sh-4.4# chroot /host
+sh-5.1# ls -l /etc/cni/net.d/*
+-rw-r--r--. 1 root root 469 Apr 10 18:29 /etc/cni/net.d/100-crio-bridge.conflist
+-rw-r--r--. 1 root root 129 Apr 10 18:29 /etc/cni/net.d/200-loopback.conflist
+sh-5.1#"	
