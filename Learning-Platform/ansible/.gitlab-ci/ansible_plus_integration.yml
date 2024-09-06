@@ -1,0 +1,20 @@
+.ansible_plus:
+  script: |
+    CREDS=$(echo -n "${ANSIBLEP_USER}:${ANSIBLEP_PASS}" | base64)
+    curl -X 'POST' \
+      'https://ansibleplus.verizon.com/ap/play?vsad=J14V' \
+      -H 'accept: application/json' \
+      -H "Authorization: Basic $CREDS" \
+      -H 'Content-Type: application/json' \
+      -d '{
+      "AnsibleVersion": "2.13",
+      "ExtraArgs": "--tags '$TAG' ",
+      "GitBranch": "main",
+      "GitRepoUrl": "git@gitlab.verizon.com:gts-openshift/ansible_hubcluster_argocd.git",
+      "InventoryFile": "inventory/'$DEPLOYMENT_ENV'/'$LOCATION'/hosts.yml",
+      "OS": "Linux",
+      "PlaybookName": "deploy.yml",
+      "PlaybookParameters": {"location":"'$LOCATION'", "deployment_env":"'$DEPLOYMENT_ENV'", "cluster_destroy":"'$CLUSTER_DESTROY'"},
+      "ServerPassword": "",
+      "ServerUserName": "'$SVC_ACCT'"
+    }'
