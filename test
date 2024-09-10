@@ -1,1 +1,101 @@
-Ensuring correct file permissions for the CNI configuration files is crucial for maintaining security compliance and operational integrity. Non-compliance could lead to security vulnerabilities, audit failures, and potential legal and financial repercussions. Automating this process will enhance efficiency, reduce manual effort, and ensure consistent configurations across all nodes, thereby protecting our infrastructure and maintaining service availability.
+[kurelak@tdcldj14va007 ~]$ oc get sub
+NAME                      PACKAGE               SOURCE                CHANNEL
+compliance-operator       compliance-operator   my-redhat-operators   stable
+compliance-operator-sub   compliance-operator   my-redhat-operators   stable
+[kurelak@tdcldj14va007 ~]$ oc describe sub compliance-operator-sub
+Name:         compliance-operator-sub
+Namespace:    openshift-compliance
+Labels:       operators.coreos.com/compliance-operator.openshift-compliance=
+Annotations:  <none>
+API Version:  operators.coreos.com/v1alpha1
+Kind:         Subscription
+Metadata:
+  Creation Timestamp:  2024-09-09T20:31:16Z
+  Generation:          1
+  Managed Fields:
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .:
+          f:operators.coreos.com/compliance-operator.openshift-compliance:
+    Manager:      Go-http-client
+    Operation:    Update
+    Time:         2024-09-09T20:31:16Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        .:
+        f:channel:
+        f:installPlanApproval:
+        f:name:
+        f:source:
+        f:sourceNamespace:
+        f:startingCSV:
+    Manager:      config-policy-controller
+    Operation:    Update
+    Time:         2024-09-09T20:31:16Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:catalogHealth:
+        f:conditions:
+        f:lastUpdated:
+    Manager:         catalog
+    Operation:       Update
+    Subresource:     status
+    Time:            2024-09-10T21:27:12Z
+  Resource Version:  910037791
+  UID:               a0588eb7-d722-4da4-a156-8990c4206ef8
+Spec:
+  Channel:                stable
+  Install Plan Approval:  Manual
+  Name:                   compliance-operator
+  Source:                 my-redhat-operators
+  Source Namespace:       openshift-marketplace
+  Starting CSV:           compliance-operator.v1.5.0
+Status:
+  Catalog Health:
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              my-certified-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  906239280
+      UID:               17c4c2c1-4e0c-4492-8899-e4039d7f5a18
+    Healthy:             true
+    Last Updated:        2024-09-09T20:31:16Z
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              my-community-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  906223029
+      UID:               6209db54-41f5-4846-9671-c89ee87e6bbf
+    Healthy:             true
+    Last Updated:        2024-09-09T20:31:16Z
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              my-redhat-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  906245750
+      UID:               0a1128ce-2b7f-4a32-9452-332cc3116eac
+    Healthy:             true
+    Last Updated:        2024-09-09T20:31:16Z
+  Conditions:
+    Last Transition Time:  2024-09-09T20:31:16Z
+    Message:               all available catalogsources are healthy
+    Reason:                AllCatalogSourcesHealthy
+    Status:                False
+    Type:                  CatalogSourcesUnhealthy
+    Message:               constraints not satisfiable: subscription compliance-operator exists, subscription compliance-operator-sub exists, subscription compliance-operator-sub requires my-redhat-operators/openshift-marketplace/stable/compliance-operator.v1.5.0, my-redhat-operators/openshift-marketplace/stable/compliance-operator.v1.5.0 and @existing/openshift-compliance//compliance-operator.v1.5.1 originate from package compliance-operator, subscription compliance-operator requires @existing/openshift-compliance//compliance-operator.v1.5.1
+    Reason:                ConstraintsNotSatisfiable
+    Status:                True
+    Type:                  ResolutionFailed
+  Last Updated:            2024-09-10T21:27:12Z
+Events:                    <none>
