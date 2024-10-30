@@ -1,1 +1,447 @@
- Warning  policy: tpanpocpj14v/compliance-operator-compliance-compliance-2023-09-22-conf-4wnvt  3m5s                  configuration-policy-controller  NonCompliant; notification - namespaces [openshift-compliance] found as specified; notification - operatorgroups [compliance-operator] found as specified in namespace openshift-compliance; violation - subscriptions [compliance-operator-sub] found but not as specified in namespace openshift-compliance; notification - scansettings [vz-ciscompliance-settings] found as specified in namespace openshift-compliance; notification - scansettingbindings [cis-compliancebind-vz] found as specified in namespace openshift-compliance; notification - tailoredprofiles [ocp4-cis-custom-profile] found as specified in namespace openshift-compliance
+stages:
+    - logVariables
+    - getUUID
+    - nonprod
+    - prod
+    - gather_and_combine_uuid_namespaces
+
+# variables: # These variables are global
+
+logVariables:
+    stage: logVariables
+    image: 
+        name: docker-remote.oneartifactoryci.verizon.com/alpine/git:latest
+        entrypoint: [""]
+    variables:
+        LOG_REPO: "gitlab.verizon.com/gts-openshift/onboarding-pipeline-logs.git"
+    script:
+        - ls
+        - git config --global user.email "Openshift.admins@verizon.com@verizon.com"
+        - git config --global user.name "onboardingpipeline-bot"
+        - git clone https://oauth2:$LOG_ACCESS_TOKEN@$LOG_REPO
+        - cd onboarding-pipeline-logs
+        - ls
+        - cd $NONPROD_OR_PROD
+        - pwd
+        - ls
+        - WEBHOOK_BODY=$(cat $TRIGGER_PAYLOAD)
+        - echo "$CI_PIPELINE_CREATED_AT for $VSAD-$APP" >> ${NONPROD_OR_PROD}_logs.txt
+        - echo "$WEBHOOK_BODY" >> ${NONPROD_OR_PROD}_logs.txt
+        - echo "" >> ${NONPROD_OR_PROD}_logs.txt
+        - git add .
+        - git commit -m "logging $VSAD-$APP variables"
+        - git push origin HEAD:main
+
+
+# # get UUID, we need to pass the UUID variable (which is in the txt file) all the downstream to each job 
+# # so we can have the artifact at the end of the pipeline to be picked up and to be available.
+# # we will read the uuid.txt file and set the UUID variable in the next job. After we read and have the variable
+# # we don't need to cat uuid.txt everytime to get the UUID, just once.
+getUUID:
+  stage: getUUID
+  image: docker-remote.oneartifactoryci.verizon.com/python:3.11.3
+  script:
+    - > 
+        if [[ $UUID == "" ]]; then 
+            python3 generate_uuid.py > uuid.txt;
+            UUID=$(cat uuid.txt);
+        else
+            echo "$UUID" > uuid.txt
+        fi
+    - echo "UUID=$UUID" >> envVars.env
+  artifacts:
+    paths:
+       - ./uuid.txt
+    reports:
+        dotenv: envVars.env
+
+nonprod_run:
+    stage: nonprod
+    trigger:
+        include: /nonprod/.gitlab-ci.yml
+        strategy: depend
+    needs:
+        - job: getUUID
+          artifacts: true
+    only:
+        variables: 
+        - $NONPROD_OR_PROD == "nonprod" && $SKIP_HELM != "true"
+    variables:
+        PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+        TRIGGER_PAYLOAD: $TRIGGER_PAYLOAD
+        WEBHOOK_BODY: $WEBHOOK_BODY
+        NONPROD_OR_PROD: $NONPROD_OR_PROD
+        TSHIRT: $TSHIRT
+        VSAD: $VSAD
+        DEV: $DEV
+        QA: $QA
+        SIT: $SIT
+        STG: $STG
+        UAT: $UAT
+        PREPROD: $PREPROD
+        APP: $APP
+        GREENFIELD: $GREENFIELD
+        TAMPA_ENABLED: $TAMPA_ENABLED
+        SAC_ENABLED: $SAC_ENABLED
+        TWINSBURG_ENABLED: $TWINSBURG_ENABLED
+        DEDICATED_CLUSTER_ENABLED: $DEDICATED_CLUSTER_ENABLED
+        DEDICATED_CLUSTER_URL: $DEDICATED_CLUSTER_URL
+        DEDICATED_CLUSTER_NAME: $DEDICATED_CLUSTER_NAME
+        DEDICATED_CLUSTER_SHORTNAME: $DEDICATED_CLUSTER_SHORTNAME
+        SERVICEACCOUNT: $SERVICEACCOUNT
+        LABELSz: $LABELS
+        ANNOTATIONSz: $ANNOTATIONS
+        DEV_AD_GROUPSz: $DEV_AD_GROUPS  #adding 'z' to end because trigger pipelines can't pass variable downstream without cyclical dependencies
+        ADMIN_AD_GROUPSz: $ADMIN_AD_GROUPS
+        AD_DOMAIN_ADEBPz: $AD_DOMAIN_ADEBP
+        AD_DOMAIN_EMEAz: $AD_DOMAIN_EMEA
+        AD_DOMAIN_USWINz: $AD_DOMAIN_USWIN
+        AD_DOMAIN_VDSIz: $AD_DOMAIN_VDSI
+        DEDICATED_CLUSTER_OC_NAME: $DEDICATED_CLUSTER_OC_NAME # for group sync job
+
+prod_run:
+    stage: prod
+    trigger:
+        include: /prod/.gitlab-ci.yml
+        strategy: depend
+    only:
+        variables: 
+        - $NONPROD_OR_PROD == "prod" && $SKIP_HELM != "true"
+    variables:
+        PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+        TRIGGER_PAYLOAD: $TRIGGER_PAYLOAD
+        WEBHOOK_BODY: $WEBHOOK_BODY
+        NONPROD_OR_PROD: $NONPROD_OR_PROD
+        PREPROD: $PREPROD
+        TSHIRT: $TSHIRT
+        VSAD: $VSAD
+        APP: $APP
+        GREENFIELD: $GREENFIELD
+        TAMPA_ENABLED: $TAMPA_ENABLED
+        SAC_ENABLED: $SAC_ENABLED
+        TWINSBURG_ENABLED: $TWINSBURG_ENABLED
+        DEDICATED_CLUSTER_ENABLED: $DEDICATED_CLUSTER_ENABLED
+        DEDICATED_CLUSTER_URL: $DEDICATED_CLUSTER_URL
+        DEDICATED_CLUSTER_NAME: $DEDICATED_CLUSTER_NAME
+        DEDICATED_CLUSTER_SHORTNAME: $DEDICATED_CLUSTER_SHORTNAME
+        SERVICEACCOUNT: $SERVICEACCOUNT
+        LABELSz: $LABELS
+        ANNOTATIONSz: $ANNOTATIONS
+        DEV_AD_GROUPSz: $DEV_AD_GROUPS 
+        ADMIN_AD_GROUPSz: $ADMIN_AD_GROUPS
+        AD_DOMAIN_ADEBPz: $AD_DOMAIN_ADEBP
+        AD_DOMAIN_EMEAz: $AD_DOMAIN_EMEA
+        AD_DOMAIN_USWINz: $AD_DOMAIN_USWIN
+        AD_DOMAIN_VDSIz: $AD_DOMAIN_VDSI
+        DEDICATED_CLUSTER_OC_NAME: $DEDICATED_CLUSTER_OC_NAME
+
+
+#make sure to set up tags for nonprod vs prod runner
+#Add openshift ip and openshift token to gitlab variables
+gather_and_combine_uuid_namespaces_nonprod:
+    stage: gather_and_combine_uuid_namespaces
+    image: docker-virtual.oneartifactoryci.verizon.com/appuio/oc:v4.12
+    only:
+        variables: 
+        - $NONPROD_OR_PROD == "nonprod"
+    dependencies:
+        - getUUID
+    script:
+        # create new array to hold each secret data
+        # log into cluster
+        # create array to hold secret names of specified cluster
+        # get namespaces with vsad and for each namespace
+        # find secrets with uuid label, capture secret names into array
+        # since we are grep'ing the vsad for the namespace, we could get some that do not have the secret, 
+        #   we use --ignore-not-found. if not found secretnames will be blank, if secretnames is blank, then dont add to aggregate_secret_data
+        # since we have the name of the secret, we also need the namespace to get the secret data. 
+        #   OS does not allow you to get secret in all namespaces, you need to have the namespace where the secret resides
+        # set variables for each element
+        # set json format string to set up for printint elements
+        # print json formatted string and add it to the aggregate_secret_data array
+        # join all the elements of aggregate_secret_data array into one string
+        #   in the JSON_FMT string at the end there will be a comma and a newline. We take care of removing the comma for last element
+        # log into the hub cluster & project
+        # create secret with name $UUID-claim-ticket and the data as one string.
+        - aggregate_secret_data=()
+        - aggregate_secret_data+="$(echo [)"
+        - UUID=$(cat ./uuid.txt)
+        - runtime="7 minute"
+        - echo "Running for $runtime for each DC, checking every 30 seconds"
+        - | 
+          if [ "$TAMPA_ENABLED" == "true" ]; then
+            oc login --server https://$TAMPA_IP:6443 --token $TAMPA_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ; 
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "NP_TAMPA: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+          if [ "$TWINSBURG_ENABLED" == "true" ]; then
+            oc login --server https://$TWINSBURG_IP:6443 --token $TWINSBURG_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ; 
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "NP_TWINS: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+
+          if [ "$DEDICATED_CLUSTER_ENABLED" == "true" ]; then
+            oc login --server https://$DEDICATED_CLUSTER_URL:6443 --token $DEDICATED_CLUSTER_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ;
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "$DEDICATED_CLUSTER_NAME: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+
+        - joined=$( IFS=$'\n'; echo "${aggregate_secret_data[*]}")
+        - joined=${joined%?} #remove final character (,)
+        - joined+="$(echo ])"
+        #- arrayVar=$( jq --compact-output --null-input '$ARGS.positional' --args -- "${joined[@]}") ;
+        #- echo ${arrayVar}
+        - oc login --server $TAMPA_HUB --token $TAMPA_HUB_TOKEN
+        - oc project appdev-gitops
+        - if [ ${#joined} -ge 5 ]; then oc create secret generic $UUID-claim-ticket --from-literal=data="$(echo "${joined}")" ; else echo "error creating claim ticket"; exit 0; fi
+        #- oc create secret generic $UUID-claim-ticket --from-literal=data="$(echo "${joined}")";
+        - echo '$(oc get secret $UUID-claim-ticket)'
+        - oc logout
+
+    artifacts:
+     paths:
+       - ./uuid.txt
+    
+gather_and_combine_uuid_namespaces_prod:
+    stage: gather_and_combine_uuid_namespaces
+    image: docker-virtual.oneartifactoryci.verizon.com/appuio/oc:v4.12
+    only:
+        variables: 
+        - $NONPROD_OR_PROD == "prod"
+    dependencies:
+        - getUUID
+    script:
+        - aggregate_secret_data=()
+        - aggregate_secret_data+="$(echo [)"
+        - UUID=$(cat ./uuid.txt)
+        - runtime="7 minute"
+        - echo "Running for $runtime for each DC, checking every 30 seconds"
+        - | 
+          if [ "$TAMPA_ENABLED" == "true" ]; then
+            oc login --server https://$TAMPA_PROD_IP:6443 --token $TAMPA_PROD_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ; 
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "PROD_TAMPA: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+          
+          if [ "$SAC_ENABLED" == "true" ]; then
+            oc login --server https://$SAC_PROD_IP:6443 --token $SAC_PROD_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ;
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "PROD_SAC: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+
+          if [ "$TWINSBURG_ENABLED" == "true" ]; then
+            oc login --server https://$TWINSBURG_PROD_IP:6443 --token $TWINSBURG_PROD_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ; 
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "PROD_TWINS: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+
+          if [ "$DEDICATED_CLUSTER_ENABLED" == "true" ]; then
+            oc login --server https://$DEDICATED_CLUSTER_URL:6443 --token $DEDICATED_CLUSTER_TOKEN --insecure-skip-tls-verify
+            secretnames=()
+            endtime=$(date -ud "$runtime" +%s)
+            while [[ $(date -u +%s) -le $endtime && -z ${secretnames[@]} ]]
+            do
+                for n in $(oc get ns | grep -E "\b$VSAD-\w+-$APP\b" | awk '{print $1}'); 
+                    do 
+                    echo "Namespace: $n" ;
+                    secretnames=($(oc get secrets -l uuid=$UUID --no-headers -n $n --ignore-not-found | awk '{print $1}')) ;
+                    echo "Secretnames ${secretnames[0]}" ;
+                    
+                    if [ ! -z "${secretnames[0]}" ]; then
+                        echo "Compiling for secret: ${secretnames[0]}" ;
+                        namespacefromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.namespace}})
+                        safromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.serviceAccountName}})
+                        datacenterfromsecret=$(oc get secret ${secretnames[0]} -n $n --template={{.metadata.labels.datacenter}})
+                        token=$(oc get secret ${secretnames[0]} -n $n --template={{.data.token}} | base64 -d)
+                        JSON_FMT='{"namespace":"%s", "token":"%s", "serviceaccount":"%s", "datacenter":"%s"},\n'
+                        aggregate_secret_data+=("$(printf "$JSON_FMT" "$namespacefromsecret" "$token" "$safromsecret" "$datacenterfromsecret")"); 
+                        echo "found ${secretnames[0]} and adding it to aggregate_secret_data array" ;
+                    fi
+                done
+
+                if [ -z "${secretnames[@]}" ]; then
+                    echo "Time Now: `date +%H:%M:%S`";
+                    echo "$DEDICATED_CLUSTER_NAME: no secrets found with uuid=$UUID, sleeping for 30 seconds" ;
+                    sleep 30;
+                fi
+            done
+            oc logout
+          fi
+
+        - joined=$( IFS=$'\n'; echo "${aggregate_secret_data[*]}")
+        - joined=${joined%?} #remove final character (,)
+        - joined+="$(echo ])"
+        #- arrayVar=$( jq --compact-output --null-input '$ARGS.positional' --args -- "${joined[@]}") ;
+        #- echo ${arrayVar}
+        - oc login --server $TAMPA_PROD_HUB --token $TAMPA_PROD_HUB_TOKEN
+        - oc project appdev-gitops
+        - if [ ${#joined} -ge 5 ]; then oc create secret generic $UUID-claim-ticket --from-literal=data="$(echo "${joined}")" ; else echo "error creating claim ticket"; exit 0; fi
+        #- oc create secret generic $UUID-claim-ticket --from-literal=data="$(echo "${joined}")";
+        - echo '$(oc get secret $UUID-claim-ticket)'
+        - oc logout
+
+    artifacts:
+     paths:
+       - ./uuid.txt
