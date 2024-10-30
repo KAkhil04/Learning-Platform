@@ -1,16 +1,32 @@
-(count without (agentpool) (sum(sum_over_time(apiserver_audit_requests_rejected_total{cluster=~"$Cluster"}[$__range])) by (agentpool)) or vector(0) )
-
-
-sum(cadvisor_version_info{agentpool=~"$NodePool"})
-
-sum(cadvisor_version_info{agentpool=~"$NodePool"}) by (agentpool)
-
-kube_node_status_capacity{resource=~"pods"}
-
- 100-(avg(rate(node_cpu_seconds_total{node=~".*$NodePool.*",mode="idle"}[5m]))*100)
-
-avg(node_memory_MemTotal_bytes{node=~".*$NodePool.*"}-node_memory_MemAvailable_bytes{node=~".*$NodePool.*"})/ avg(node_memory_MemTotal_bytes{node=~".*$NodePool.*"}) *100
-
-sum(kube_node_status_capacity{resource=~"cpu"})
-
-sum(kube_node_status_capacity{resource=~"memory"})
+curl -X POST https://gitlab.verizon.com/api/v4/projects/227878/trigger/pipeline \
+     -H "Content-Type=application/x-www-form-urlencoded" \
+     -d "token=glptt-8f4574eb7a0f057350b2a71f84a3a8a211a65dae" \
+     -d "ref=OCP-2837" \
+     -d "variables[NONPROD_OR_PROD]=nonprod" \
+     -d "variables[TSHIRT]=xxl" \
+     -d "variables[VSAD]=ocp" \
+     -d "variables[DEV]=true" \
+     -d "variables[QA]=false" \
+     -d "variables[SIT]=false" \
+     -d "variables[STG]=false" \
+     -d "variables[UAT]=false" \
+     -d "variables[PREPROD]=false" \
+     -d "variables[GREENFIELD]=false" \
+     -d "variables[APP]=test" \
+     -d "variables[SERVICEACCOUNT]=tdcnp-ocp-dev-test-sa" \
+     -d "variables[TAMPA_ENABLED]=false" \
+     -d "variables[TWINSBURG_ENABLED]=false" \
+     -d "variables[SAC_ENABLED]=false" \
+     -d "variables[ADMIN_AD_GROUPS]=SDLC_KUBE_NONPROD_TEST_ADMIN" \
+     -d "variables[DEV_AD_GROUPS]=SDLC_KUBE_NONPROD_TEST_VIEW" \
+     -d "variables[AD_DOMAIN_USWIN]=SDLC_KUBE_NONPROD_TEST_ADMIN,SDLC_KUBE_NONPROD_TEST_VIEW" \
+     -d "variables[AD_DOMAIN_ADEBP]=ADEBPSDLC_KUBE_NONPROD_TEST_ADMIN,ADEBPSDLC_KUBE_NONPROD_TEST_VIEW" \
+     -d "variables[AD_DOMAIN_EMEA]=" \
+     -d "variables[AD_DOMAIN_VDSI]=VDSISDLC_KUBE_NONPROD_TEST_ADMIN,VDSISDLC_KUBE_NONPROD_TEST_VIEW" \
+     -d "variables[UUID]=" \
+     -d "variables[DEDICATED_CLUSTER_ENABLED]=true" \
+     -d "variables[DEDICATED_CLUSTER_URL]=api.tdcnpocpaidj14v.ebiz.verizon.com" \
+     -d "variables[DEDICATED_CLUSTER_NAME]=tdcnpocpaidj14v" \
+     -d "variables[DEDICATED_CLUSTER_SHORTNAME]=tdcaid" \
+     -d "variables[ANNOTATIONS]=verizon.com/support-poc: jluv@verizon.com" \
+     -d "id=227878"
