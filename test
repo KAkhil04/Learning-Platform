@@ -235,6 +235,13 @@ gather_and_combine_uuid_namespaces_nonprod:
           fi
 
           if [ "$DEDICATED_CLUSTER_ENABLED" == "true" ]; then
+            DEDICATED_CLUSTER_TOKEN=$(eval echo "\$${DEDICATED_CLUSTER_NAME}_token")
+
+            if [ -z "$DEDICATED_CLUSTER_TOKEN" ]; then
+              echo "Unknown cluster: $DEDICATED_CLUSTER_NAME"
+              exit 1
+            fi
+            
             oc login --server https://$DEDICATED_CLUSTER_URL:6443 --token $DEDICATED_CLUSTER_TOKEN --insecure-skip-tls-verify
             secretnames=()
             endtime=$(date -ud "$runtime" +%s)
@@ -398,6 +405,13 @@ gather_and_combine_uuid_namespaces_prod:
           fi
 
           if [ "$DEDICATED_CLUSTER_ENABLED" == "true" ]; then
+            DEDICATED_CLUSTER_TOKEN=$(eval echo "\$${DEDICATED_CLUSTER_NAME}_token")
+
+            if [ -z "$DEDICATED_CLUSTER_TOKEN" ]; then
+              echo "Unknown cluster: $DEDICATED_CLUSTER_NAME"
+              exit 1
+            fi
+
             oc login --server https://$DEDICATED_CLUSTER_URL:6443 --token $DEDICATED_CLUSTER_TOKEN --insecure-skip-tls-verify
             secretnames=()
             endtime=$(date -ud "$runtime" +%s)
