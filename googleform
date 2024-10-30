@@ -1,0 +1,55 @@
+function onFormSubmit(e) {
+  var formData = e.values;
+
+  var payload = {
+    token: formData[1],
+    ref: formData[2],
+    variables: {
+      NONPROD_OR_PROD: formData[3],
+      TSHIRT: formData[4],
+      VSAD: formData[5],
+      DEV: formData[6],
+      QA: formData[7],
+      SIT: formData[8],
+      STG: formData[9],
+      UAT: formData[10],
+      PREPROD: formData[11],
+      GREENFIELD: formData[12],
+      APP: formData[13],
+      SERVICEACCOUNT: formData[14],
+      TAMPA_ENABLED: formData[15],
+      TWINSBURG_ENABLED: formData[16],
+      SAC_ENABLED: formData[17],
+      ADMIN_AD_GROUPS: formData[18],
+      DEV_AD_GROUPS: formData[19],
+      AD_DOMAIN_USWIN: formData[20],
+      AD_DOMAIN_ADEBP: formData[21],
+      AD_DOMAIN_EMEA: formData[22],
+      AD_DOMAIN_VDSI: formData[23],
+      UUID: formData[24],
+      DEDICATED_CLUSTER_ENABLED: formData[25],
+      DEDICATED_CLUSTER_URL: formData[26],
+      DEDICATED_CLUSTER_NAME: formData[27],
+      DEDICATED_CLUSTER_SHORTNAME: formData[28],
+      ANNOTATIONS: formData[29]
+    },
+    id: formData[30]
+  };
+
+  var options = {
+    method: 'post',
+    contentType: 'application/x-www-form-urlencoded',
+    payload: payload
+  };
+
+  var response = UrlFetchApp.fetch('https://gitlab.verizon.com/api/v4/projects/227878/trigger/pipeline', options);
+  Logger.log(response.getContentText());
+}
+
+function setupTrigger() {
+  var form = FormApp.openById('YOUR_FORM_ID');
+  ScriptApp.newTrigger('onFormSubmit')
+    .forForm(form)
+    .onFormSubmit()
+    .create();
+}
