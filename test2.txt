@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esx-connector
+  namespace: openshift-monitoring
+  labels:
+    exposes-metrics: esx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      exposes-metrics: esx
+  template:
+    metadata:
+      labels:
+        exposes-metrics: esx
+	spec:
+	  restartPolicy: Always
+	  serviceAccountName: default
+	  imagePullSecrets:
+		- name: j14v-artifactory-cred
+	  priority: 0
+	  schedulerName: default-scheduler
+	  enableServiceLinks: true
+	  terminationGracePeriodSeconds: 30
+	  preemptionPolicy: PreemptLowerPriority
+	  nodeName: tpanpacmj14v-62ws4-master-0
+	  securityContext:
+		seLinuxOptions:
+		  level: 's0:c21,c5'
+		runAsUser: 1000430001
+	  containers:
+		- resources: {}
+		  terminationMessagePath: /dev/termination-log
+		  name: splunk-importer
+		  env:
+			- name: ESX_ENVIRONMENT
+			  value: np
+		  securityContext:
+			capabilities:
+			  drop:
+				- MKNOD
+			runAsNonRoot: true
+		  ports:
+			- name: metrics
+			  containerPort: 8080
+			  protocol: TCP
+		  imagePullPolicy: Always
+		  volumeMounts:
+			- name: splunk-credentials
+			  readOnly: true
+			  mountPath: /app
+			- name: kube-api-access-jgktd
+			  readOnly: true
+			  mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+		  terminationMessagePolicy: File
+		  image: 'j14v-rhocp-docker-np.oneartifactoryci/ocp-utils/prometheus-splunk-importer:latest'
+	  serviceAccount: default
+	  volumes:
+		- name: splunk-credentials
+		  secret:
+			secretName: esx-splunk-credentials
+			defaultMode: 420
+		- name: kube-api-access-jgktd
+		  projected:
+			sources:
+			  - serviceAccountToken:
+				  expirationSeconds: 3607
+				  path: token
+			  - configMap:
+				  name: kube-root-ca.crt
+				  items:
+					- key: ca.crt
+					  path: ca.crt
+			  - downwardAPI:
+				  items:
+					- path: namespace
+					  fieldRef:
+						apiVersion: v1
+						fieldPath: metadata.namespace
+			  - configMap:
+				  name: openshift-service-ca.crt
+				  items:
+					- key: service-ca.crt
+					  path: service-ca.crt
+			defaultMode: 420
+	  dnsPolicy: ClusterFirst
+	  tolerations:
+		- key: node.kubernetes.io/not-ready
+		  operator: Exists
+		  effect: NoExecute
+		  tolerationSeconds: 300
+		- key: node.kubernetes.io/unreachable
+		  operator: Exists
+		  effect: NoExecute
+		  tolerationSeconds: 300
