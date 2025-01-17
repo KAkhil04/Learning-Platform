@@ -1,486 +1,111 @@
-apiVersion: v1
-kind: ResourceQuota
+kind: Deployment
+apiVersion: apps/v1
 metadata:
-  name: {{ include "resourceQuota.name" . }}
-  namespace: {{ include "namespace.name" . }}
-  annotations:
-    argocd.argoproj.io/sync-wave: "-3"
+  name: esx-connector
+  namespace: openshift-monitoring
   labels:
-    onboarding.verizon.io/tshirt-size: {{ include "labels.tshirt" . }}
+    exposes-metrics: esx
 spec:
-  hard: {{ include "global.resourcequota" . }}
-  scopes:
-  - NotTerminating
----
-$ ./helm.exe template dev-chart --dry-run -f dev-values.yaml --output-dir ./output/tampa/rat/cat/dev './' --set vsad=rat --set env=dev --set appId=cat --set serviceAccount.name=abcd --set tshirt=s --set greenfield=false --set datacenter=tampa --set datacenter_shortname=tpa --set datacenter_url=api.tpa.com --set "rolebindings.admin.subjects.name={GIJV_ERP_DBA_ADMINS,ADEBP_GIJV_ERP_DBA_ADMINS}" --set "rolebindings.dev.subjects.name={GIJV_Prod_Admins,ADEBP_GIJV_Prod_Admins}" --set uuid=1234 --set serviceAccountSecretNS=abcd --set "labels={onboarding.verizon.io/lob: CSG,onboarding.verizon.io/vast: '24204'}" --set "annotations={onboarding.verizon.io/support-poc: erpdbainfrastructure@verizonwireless.com}"
-Error: template: onboarding-pipeline/templates/resourcequota.yaml:11:11: executing "onboarding-pipeline/templates/resourcequota.yaml" at <include "global.resourcequota" .>: error calling include: template: no template "global.resourcequota" associated with template "gotpl"
-
-Use --debug flag to render out invalid YAML
----
-vsad: vsad
-appId: app
-env: dev
-
-datacenter: tampa
-datacenter_shortname: TPA
-datacenter_url: www
-
-labels: {}
-annotations: {}
-uuid: abc1234
-serviceAccountSecretNS: argoappofapps
-
-namespace:
-  description: "description of namespace"
-#  displayName: displayName
-
-
-serviceAccount:
-  create: true
-  name: serviceAccountName
-
-tshirt: 
-greenfield: false
-
-small:
-  resourceQuota:
-    hard:
-      requests:
-        cpu: 1
-        memory: 0.0100Gi
-      limits:
-        cpu: 1
-        memory: 0.0100Gi
-  limitRange:
-    container:
-      max:
-        cpu: 1
-        memory: 0.0100Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: .6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi 
-    pod:
-      max:
-        cpu: 1
-        memory: .0100Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: 0.6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi
-
-medium:
-  resourceQuota:
-    hard:
-      requests:
-        cpu: 1
-        memory: 0.3600Gi
-      limits:
-        cpu: 1
-        memory: 0.3600Gi
-  limitRange:
-    container:
-      max:
-        cpu: 1
-        memory: 0.3600Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: .6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi 
-    pod:
-      max:
-        cpu: 1
-        memory: 0.3600Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: 0.6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi
-
-large:
-  resourceQuota:
-    hard:
-      requests:
-        cpu: 1
-        memory: 0.6200Gi
-      limits:
-        cpu: 1
-        memory: 0.6200Gi
-  limitRange:
-    container:
-      max:
-        cpu: 1
-        memory: 0.6200Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: .6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi 
-    pod:
-      max:
-        cpu: 1
-        memory: 0.6200Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: 0.6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi
-
-xLarge:
-  resourceQuota:
-    hard:
-      requests:
-        cpu: 3
-        memory: 2.1800Gi
-      limits:
-        cpu: 3
-        memory: 2.1800Gi
-  limitRange:
-    container:
-      max:
-        cpu: 3
-        memory: 2.1800Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: .6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi 
-    pod:
-      max:
-        cpu: 3
-        memory: 2.1800Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: 0.6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi
-
-xxLarge:
-  resourceQuota:
-    hard:
-      requests:
-        cpu: 15
-        memory: 32.7500Gi
-      limits:
-        cpu: 15
-        memory: 32.7500Gi
-  limitRange:
-    container:
-      max:
-        cpu: 15
-        memory: 32.7500Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: .6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi 
-    pod:
-      max:
-        cpu: 15
-        memory: 32.7500Gi
-      min:
-        cpu: .000015622
-        memory: .00004Gi
-      default:
-        cpu: 0.6983
-        memory: 0.0100Gi
-      defaultRequest:
-        cpu: .25
-        memory: .0025Gi
-
-rolebindings:
-  admin:
-    subjects:
-      name:
-      - FILLTHISIN_{{ .Values.vsad }}_ADMIN
-
-  dev:
-    subjects:
-      name:
-      - FILLTHISIN_{{ .Values.vsad }}_VIEW
-      
-global:
-  resourcequota:
-    limits:
-      cpu: 10m
-      memory: 500Gi
-    requests:
-      cpu: 5m
-      memory: 250Gi
----
-
-#helpers_tpl
-
-{{/*
-    Namespace: vsad-env-appId
-*/}}
-{{- define "namespace.name" -}}
-{{  printf "%s-%s-%s" .Values.vsad .Values.env .Values.appId | trunc 63 | trimSuffix "-" | lower }}
-{{- end }}
-
-{{/*
-    LimitRange: vsad-env-appId
-*/}}
-{{- define "limitRange.name" -}}
-{{  printf "%s-%s-%s" .Values.vsad .Values.env .Values.appId | trunc 63 | trimSuffix "-" | lower }}
-{{- end }}
-
-{{/*
-    ResourceQuota: vsad-env-appId
-*/}}
-{{- define "resourceQuota.name" -}}
-{{  printf "%s-%s-%s" .Values.vsad .Values.env .Values.appId | trunc 63 | trimSuffix "-" | lower }}
-{{- end }}
-
-
-{{/*
-    TSHIRT SIZING
-*/}}
-{{- define "resourceQuota.tShirtSizing" -}}
-{{- if eq .Values.tshirt "S" }}
-    requests.cpu: {{ .Values.small.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.small.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.small.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.small.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "M" }}
-    requests.cpu: {{ .Values.medium.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.medium.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.medium.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.medium.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "L" }}
-    requests.cpu: {{ .Values.large.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.large.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.large.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.large.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "XL" }}
-    requests.cpu: {{ .Values.xLarge.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.xLarge.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.xLarge.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.xLarge.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "XXL" }}
-    requests.cpu: {{ .Values.xxLarge.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.xxLarge.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.xxLarge.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.xxLarge.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- if and (eq .Values.greenfield true) (ne .Values.tshirt "S") (ne .Values.tshirt "M") (ne .Values.tshirt "L") (ne .Values.tshirt "XL") (ne .Values.tshirt "XXL") }}
-    requests.cpu: {{ .Values.small.resourceQuota.hard.requests.cpu }}
-    requests.memory: {{ .Values.small.resourceQuota.hard.requests.memory }}
-    limits.cpu: {{ .Values.small.resourceQuota.hard.limits.cpu }}
-    limits.memory: {{ .Values.small.resourceQuota.hard.limits.memory }}
-{{- end }}
-{{- end }}
-
-{{- define "limitRange.tShirtSizing" -}}
-{{- if eq .Values.tshirt "S" }}
-  - type: Container
-    max:
-      cpu: {{ .Values.small.limitRange.container.max.cpu }}
-      memory: {{ .Values.small.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.small.limitRange.container.min.cpu }}
-      memory: {{ .Values.small.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.small.limitRange.container.default.cpu }}
-      memory: {{ .Values.small.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.small.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.small.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.small.limitRange.pod.max.cpu }}
-      memory: {{ .Values.small.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.small.limitRange.pod.min.cpu }}
-      memory: {{ .Values.small.limitRange.pod.min.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "M" }}
-  - type: Container
-    max:
-      cpu: {{ .Values.medium.limitRange.container.max.cpu }}
-      memory: {{ .Values.medium.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.medium.limitRange.container.min.cpu }}
-      memory: {{ .Values.medium.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.medium.limitRange.container.default.cpu }}
-      memory: {{ .Values.medium.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.medium.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.medium.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.medium.limitRange.pod.max.cpu }}
-      memory: {{ .Values.medium.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.medium.limitRange.pod.min.cpu }}
-      memory: {{ .Values.medium.limitRange.pod.min.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "L" }}
-  - type: Container
-    max:
-      cpu: {{ .Values.large.limitRange.container.max.cpu }}
-      memory: {{ .Values.large.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.large.limitRange.container.min.cpu }}
-      memory: {{ .Values.large.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.large.limitRange.container.default.cpu }}
-      memory: {{ .Values.large.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.large.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.large.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.large.limitRange.pod.max.cpu }}
-      memory: {{ .Values.large.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.large.limitRange.pod.min.cpu }}
-      memory: {{ .Values.large.limitRange.pod.min.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "XL" }}
-  - type: Container
-    max:
-      cpu: {{ .Values.xLarge.limitRange.container.max.cpu }}
-      memory: {{ .Values.xLarge.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.xLarge.limitRange.container.min.cpu }}
-      memory: {{ .Values.xLarge.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.xLarge.limitRange.container.default.cpu }}
-      memory: {{ .Values.xLarge.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.xLarge.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.xLarge.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.xLarge.limitRange.pod.max.cpu }}
-      memory: {{ .Values.xLarge.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.xLarge.limitRange.pod.min.cpu }}
-      memory: {{ .Values.xLarge.limitRange.pod.min.memory }}
-{{- end }}
-{{- if eq .Values.tshirt "XXL" }}
-  - type: Container
-    max:
-      cpu: {{ .Values.xxLarge.limitRange.container.max.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.xxLarge.limitRange.container.min.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.xxLarge.limitRange.container.default.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.xxLarge.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.xxLarge.limitRange.pod.max.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.xxLarge.limitRange.pod.min.cpu }}
-      memory: {{ .Values.xxLarge.limitRange.pod.min.memory }}
-{{- end }}
-{{- if and (eq .Values.greenfield true) (ne .Values.tshirt "S") (ne .Values.tshirt "M") (ne .Values.tshirt "L") (ne .Values.tshirt "XL") (ne .Values.tshirt "XXL") }}
-  - type: Container
-    max:
-      cpu: {{ .Values.small.limitRange.container.max.cpu }}
-      memory: {{ .Values.small.limitRange.container.max.memory }}
-    min:
-      cpu: {{ .Values.small.limitRange.container.min.cpu }}
-      memory: {{ .Values.small.limitRange.container.min.memory }}  
-    default:
-      cpu: {{ .Values.small.limitRange.container.default.cpu }}
-      memory: {{ .Values.small.limitRange.container.default.memory }}
-    defaultRequest:
-      cpu: {{ .Values.small.limitRange.container.defaultRequest.cpu }}
-      memory: {{ .Values.small.limitRange.container.defaultRequest.memory }}
-  - type: Pod
-    max:
-      cpu: {{ .Values.small.limitRange.pod.max.cpu }}
-      memory: {{ .Values.small.limitRange.pod.max.memory }}
-    min:
-      cpu: {{ .Values.small.limitRange.pod.min.cpu }}
-      memory: {{ .Values.small.limitRange.pod.min.memory }}
-{{- end }}
-{{- end }}
-
-
-{{- define "labels.tshirt" }}
-    {{- if eq .Values.greenfield true -}}
-        {{ printf "greenfield" | trunc 63 | trimSuffix "-" }}
-    {{- else -}}
-        {{ printf "%s" .Values.tshirt | trunc 63 | trimSuffix "-" }}
-    {{- end -}}
-
-{{- end -}}
-
-
-{{/*
-    adminRoleBinding: 
-        name: 
-*/}}
-{{- define "adminRoleBinding.name" -}}
-{{  printf "project:%s:admin"  .Values.vsad | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-
-
-{{/*
-    developerRoleBinding: 
-        name: 
-*/}}
-{{- define "developerRoleBinding.name" -}}
-{{  printf "project:%s:admin"  .Values.vsad | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-    Common labels
-*/}}
-{{- define "project.labels" -}}
-
-{{- end }}
+  replicas: 1
+  selector:
+    matchLabels:
+      exposes-metrics: esx
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        exposes-metrics: esx
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master: ''
+      restartPolicy: Always
+      serviceAccountName: default
+      imagePullSecrets:
+        - name: j14v-artifactory-cred
+      priority: 0
+      schedulerName: default-scheduler
+      enableServiceLinks: true
+      terminationGracePeriodSeconds: 30
+      preemptionPolicy: PreemptLowerPriority
+      securityContext:
+        seLinuxOptions:
+          level: 's0:c21,c5'
+        runAsUser: 1000430001
+      containers:
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          name: splunk-importer
+          env:
+            - name: ESX_ENVIRONMENT
+              value: np
+          securityContext:
+            capabilities:
+              drop:
+                - MKNOD
+            runAsNonRoot: true
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: splunk-credentials
+              readOnly: true
+              mountPath: /app
+            - name: kube-api-access-jgktd
+              readOnly: true
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          terminationMessagePolicy: File
+          image: 'j14v-rhocp-docker-np.oneartifactoryci.verizon.com/ocp-utils/prometheus-splunk-importer:latest'
+      serviceAccount: default
+      volumes:
+        - name: splunk-credentials
+          secret:
+            secretName: esx-splunk-credentials
+            defaultMode: 420
+        - name: kube-api-access-jgktd
+          projected:
+            sources:
+              - serviceAccountToken:
+                  expirationSeconds: 3607
+                  path: token
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        apiVersion: v1
+                        fieldPath: metadata.namespace
+              - configMap:
+                  name: openshift-service-ca.crt
+                  items:
+                    - key: service-ca.crt
+                      path: service-ca.crt
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+      tolerations:
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+        - key: node.kubernetes.io/unreachable
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
