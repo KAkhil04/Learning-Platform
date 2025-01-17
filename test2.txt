@@ -1,96 +1,248 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ResourceQuota
 metadata:
-  name: esx-connector
-  namespace: openshift-monitoring
+  name: {{ include "resourceQuota.name" . }}
+  namespace: {{ include "namespace.name" . }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
   labels:
-    exposes-metrics: esx
+    onboarding.verizon.io/tshirt-size: {{ include "labels.tshirt" . }}
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      exposes-metrics: esx
-  template:
-    metadata:
-      labels:
-        exposes-metrics: esx
-    spec:
-      restartPolicy: Always
-      serviceAccountName: default
-      imagePullSecrets:
-        - name: j14v-artifactory-cred
-      priority: 0
-      schedulerName: default-scheduler
-      enableServiceLinks: true
-      terminationGracePeriodSeconds: 30
-      preemptionPolicy: PreemptLowerPriority
-      nodeName: tpanpacmj14v-62ws4-master-0
-      securityContext:
-        seLinuxOptions:
-          level: 's0:c21,c5'
-        runAsUser: 1000430001
-      containers:
-        - resources: {}
-          terminationMessagePath: /dev/termination-log
-          name: splunk-importer
-          env:
-            - name: ESX_ENVIRONMENT
-              value: np
-          securityContext:
-            capabilities:
-              drop:
-                - MKNOD
-            runAsNonRoot: true
-          ports:
-            - name: metrics
-              containerPort: 8080
-              protocol: TCP
-          imagePullPolicy: Always
-          volumeMounts:
-            - name: splunk-credentials
-              readOnly: true
-              mountPath: /app
-            - name: kube-api-access-jgktd
-              readOnly: true
-              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          terminationMessagePolicy: File
-          image: 'j14v-rhocp-docker-np.oneartifactoryci/ocp-utils/prometheus-splunk-importer:latest'
-      serviceAccount: default
-      volumes:
-        - name: splunk-credentials
-          secret:
-            secretName: esx-splunk-credentials
-            defaultMode: 420
-        - name: kube-api-access-jgktd
-          projected:
-            sources:
-              - serviceAccountToken:
-                  expirationSeconds: 3607
-                  path: token
-              - configMap:
-                  name: kube-root-ca.crt
-                  items:
-                    - key: ca.crt
-                      path: ca.crt
-              - downwardAPI:
-                  items:
-                    - path: namespace
-                      fieldRef:
-                        apiVersion: v1
-                        fieldPath: metadata.namespace
-              - configMap:
-                  name: openshift-service-ca.crt
-                  items:
-                    - key: service-ca.crt
-                      path: service-ca.crt
-            defaultMode: 420
-      dnsPolicy: ClusterFirst
-      tolerations:
-        - key: node.kubernetes.io/not-ready
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
-        - key: node.kubernetes.io/unreachable
-          operator: Exists
-          effect: NoExecute
-          tolerationSeconds: 300
+  hard: {{ include "global.resourcequota" . }}
+  scopes:
+  - NotTerminating
+---
+$ ./helm.exe template dev-chart --dry-run -f dev-values.yaml --output-dir ./output/tampa/rat/cat/dev './' --set vsad=rat --set env=dev --set appId=cat --set serviceAccount.name=abcd --set tshirt=s --set greenfield=false --set datacenter=tampa --set datacenter_shortname=tpa --set datacenter_url=api.tpa.com --set "rolebindings.admin.subjects.name={GIJV_ERP_DBA_ADMINS,ADEBP_GIJV_ERP_DBA_ADMINS}" --set "rolebindings.dev.subjects.name={GIJV_Prod_Admins,ADEBP_GIJV_Prod_Admins}" --set uuid=1234 --set serviceAccountSecretNS=abcd --set "labels={onboarding.verizon.io/lob: CSG,onboarding.verizon.io/vast: '24204'}" --set "annotations={onboarding.verizon.io/support-poc: erpdbainfrastructure@verizonwireless.com}"
+Error: template: onboarding-pipeline/templates/resourcequota.yaml:11:11: executing "onboarding-pipeline/templates/resourcequota.yaml" at <include "global.resourcequota" .>: error calling include: template: no template "global.resourcequota" associated with template "gotpl"
+
+Use --debug flag to render out invalid YAML
+---
+vsad: vsad
+appId: app
+env: dev
+
+datacenter: tampa
+datacenter_shortname: TPA
+datacenter_url: www
+
+labels: {}
+annotations: {}
+uuid: abc1234
+serviceAccountSecretNS: argoappofapps
+
+namespace:
+  description: "description of namespace"
+#  displayName: displayName
+
+
+serviceAccount:
+  create: true
+  name: serviceAccountName
+
+tshirt: 
+greenfield: false
+
+small:
+  resourceQuota:
+    hard:
+      requests:
+        cpu: 1
+        memory: 0.0100Gi
+      limits:
+        cpu: 1
+        memory: 0.0100Gi
+  limitRange:
+    container:
+      max:
+        cpu: 1
+        memory: 0.0100Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: .6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi 
+    pod:
+      max:
+        cpu: 1
+        memory: .0100Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: 0.6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi
+
+medium:
+  resourceQuota:
+    hard:
+      requests:
+        cpu: 1
+        memory: 0.3600Gi
+      limits:
+        cpu: 1
+        memory: 0.3600Gi
+  limitRange:
+    container:
+      max:
+        cpu: 1
+        memory: 0.3600Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: .6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi 
+    pod:
+      max:
+        cpu: 1
+        memory: 0.3600Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: 0.6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi
+
+large:
+  resourceQuota:
+    hard:
+      requests:
+        cpu: 1
+        memory: 0.6200Gi
+      limits:
+        cpu: 1
+        memory: 0.6200Gi
+  limitRange:
+    container:
+      max:
+        cpu: 1
+        memory: 0.6200Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: .6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi 
+    pod:
+      max:
+        cpu: 1
+        memory: 0.6200Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: 0.6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi
+
+xLarge:
+  resourceQuota:
+    hard:
+      requests:
+        cpu: 3
+        memory: 2.1800Gi
+      limits:
+        cpu: 3
+        memory: 2.1800Gi
+  limitRange:
+    container:
+      max:
+        cpu: 3
+        memory: 2.1800Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: .6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi 
+    pod:
+      max:
+        cpu: 3
+        memory: 2.1800Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: 0.6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi
+
+xxLarge:
+  resourceQuota:
+    hard:
+      requests:
+        cpu: 15
+        memory: 32.7500Gi
+      limits:
+        cpu: 15
+        memory: 32.7500Gi
+  limitRange:
+    container:
+      max:
+        cpu: 15
+        memory: 32.7500Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: .6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi 
+    pod:
+      max:
+        cpu: 15
+        memory: 32.7500Gi
+      min:
+        cpu: .000015622
+        memory: .00004Gi
+      default:
+        cpu: 0.6983
+        memory: 0.0100Gi
+      defaultRequest:
+        cpu: .25
+        memory: .0025Gi
+
+rolebindings:
+  admin:
+    subjects:
+      name:
+      - FILLTHISIN_{{ .Values.vsad }}_ADMIN
+
+  dev:
+    subjects:
+      name:
+      - FILLTHISIN_{{ .Values.vsad }}_VIEW
+      
+global:
+  resourcequota:
+    limits:
+      cpu: 10m
+      memory: 500Gi
+    requests:
+      cpu: 5m
+      memory: 250Gi
